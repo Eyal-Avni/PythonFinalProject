@@ -29,7 +29,7 @@ def create_new_project():
 def print_project_instructions():
     global currentDate
     print("Instructions for new project:")
-    print("1) Project name must only contain letters(both lower and upper case)")
+    print("1) Project name must only contain letters(both lower and upper case are acceptable)")
     print("2) Projects are identified by a "+str(SIZE_OF_PROJECT_ID)+" digit random generated serial number containing uppercase letters and numbers")
     print("3) Project due date must be entered as followed: DD/MM/YYYY")
     print("4) Project due date must be at least 7 days from: "+currentDate+" (current date)")
@@ -179,15 +179,21 @@ def remove_duplicate_projects():
                 for key,value in line.items():
                     f.write(str(key) + ": " + str(value))
         print("Duplicate Projects removed from file Projects.txt!")
-                
-            
-            
+        
+def show_all_projects():
+    print("All the projects in company:")
+    list = create_list_from_file('Projects.txt','t')
+    for i in list:
+        if ("Project ID") in i:
+            print("----------------------")
+        print(i+"\n")
        
 def print_project_menu():
     print("Welcome to project management tool! please select an action")
     print("1.Create new project")
     print("2.Get project details by ID")
     print("3.Remove duplicate projects")
+    print("4.Show all projects")
     
 def project_tool_main():
 
@@ -203,6 +209,8 @@ def project_tool_main():
             get_details_by_ID()
         elif choice == '3':
             remove_duplicate_projects()
+        elif choice == '4':
+            show_all_projects()
         else:
             print("Invalid input!")
         again = input("Would you like to preform another action?(Y/N)\n")
