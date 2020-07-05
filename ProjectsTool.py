@@ -87,7 +87,7 @@ def project_date_too_close(projectDueDate):
     return True
     
 def get_details_by_ID():
-    search = 'Project ID: ' + (input("Enter Project ID to extract due date:"))
+    search = 'Project ID: ' + (input("Enter Project ID to extract details:"))
     list = create_list_from_file('Projects.txt','t')
     try:
         idIndex = int(list.index(search))
@@ -117,10 +117,77 @@ def create_list_from_file(filename,mode):
 
     return list
     
+def remove_duplicate_projects():
+    print("This action will look for projects with the same Name and Due date and will remove them from file")
+    print("Attention! removed projects cannot be restored")
+    choice=input("Press Y or YES to delete, any other key to go back to menu\n")
+    choice_list = ['y', 'yes', 'Y', 'YES']
+    if choice in choice_list:
+        projectDictList = []
+        with open("Projects.txt", "r") as f:
+            lines=f.readlines()
+            intern_dict = {}
+            for line in lines:
+                (key, val) = line.split(": ")
+                if key!="Project due date":
+                    intern_dict[key]=val
+                if key=="Project due date":
+                    intern_dict[key]=val
+                    projectDictList.append(intern_dict)
+                    intern_dict = {}
+            # print("Type of global_list: {0}\n".format(type(projectDictList)))
+            # print(projectDictList)
+            # print("\nType of elements inside global_list\n")
+            # for i in projectDictList:
+                # print("{0}\tType: {1}".format(i, type(i)))
+                # print(projectDictList.index(i))
+            projectDictList=[dict(t) for t in {tuple(d.items()) for d in projectDictList}]
+            # print("Type of global_list: {0}\n".format(type(projectDictList)))
+            # print(projectDictList)
+            # print("\nType of elements inside global_list\n")
+            # for i in projectDictList:
+                # print("{0}\tType: {1}".format(i, type(i)))
+                # print(projectDictList.index(i))  
+            linesToRemove=[]
+            for d in projectDictList:
+                currDate=d['Project due date']
+                currName=d['Project name']
+                dictIndex=projectDictList.index(d)
+                # print("d is: "+str(dictIndex))
+                i=dictIndex+1
+                for i in range(dictIndex+1,len(projectDictList)):
+                    # print("i is: "+str(i))
+                    if (currDate==projectDictList[i]['Project due date']) and (currName==projectDictList[i]['Project name']):
+                        linesToRemove.append(i)
+            # print("lines to remove: ")
+            linesToRemove = list(dict.fromkeys(linesToRemove))
+            # print(linesToRemove)
+            for i in linesToRemove:
+                # print("i is: "+str(i))
+                if i>=len(projectDictList):
+                    projectDictList.pop()
+                else:
+                    del projectDictList[i]
+            # print("Type of global_list: {0}\n".format(type(projectDictList)))
+            # print(projectDictList)
+            # print("\nType of elements inside global_list\n")
+            # for i in projectDictList:
+                # print("{0}\tType: {1}".format(i, type(i)))
+                # print(projectDictList.index(i))
+        with open("Projects.txt", "w") as f:
+            for line in projectDictList:
+                for key,value in line.items():
+                    f.write(str(key) + ": " + str(value))
+        print("Duplicate Projects removed from file Projects.txt!")
+                
+            
+            
+       
 def print_project_menu():
     print("Welcome to project management tool! please select an action")
-    print("1.create new project")
+    print("1.Create new project")
     print("2.Get project details by ID")
+    print("3.Remove duplicate projects")
     
 def project_tool_main():
 
@@ -134,11 +201,14 @@ def project_tool_main():
             create_new_project()
         elif choice == '2':
             get_details_by_ID()
+        elif choice == '3':
+            remove_duplicate_projects()
         else:
             print("Invalid input!")
-        again = input("Would you like to preform another action?(Y/N) ")
+        again = input("Would you like to preform another action?(Y/N)\n")
 
     print("Goodbye!")
+    
      
     
 project_tool_main()
