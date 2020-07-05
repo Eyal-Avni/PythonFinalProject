@@ -194,6 +194,28 @@ def print_project_menu():
     print("2.Get project details by ID")
     print("3.Remove duplicate projects")
     print("4.Show all projects")
+    print("5.Check for projects that are due this week")
+    
+def check_expiring_projects():
+    global currentDate
+    list = create_list_from_file('Projects.txt','t')
+    noExpiring=True
+    for i in list:
+        if ("Project ID") in i:
+            ID=i.split(": ")
+        if ("Project name") in i:
+            name=i.split(": ")
+        if ("Project due date") in i:
+            date=i.split(": ")
+            if project_date_too_close(date[1]):
+                noExpiring=False
+                print("Warning! the following project is reaching it's due date (less than 7 days):")
+                print(ID)
+                print(name)
+                print(date)
+    if noExpiring:
+        print("No projects are due to this week")
+          
     
 def project_tool_main():
 
@@ -211,6 +233,8 @@ def project_tool_main():
             remove_duplicate_projects()
         elif choice == '4':
             show_all_projects()
+        elif choice == '5':
+            check_expiring_projects()
         else:
             print("Invalid input!")
         again = input("Would you like to preform another action?(Y/N)\n")
