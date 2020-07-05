@@ -1,4 +1,4 @@
-import random
+aimport random
 import string
 import re
 import os
