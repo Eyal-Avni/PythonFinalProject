@@ -121,12 +121,6 @@ def print_project_menu():
     print("Welcome to project management tool! please select an action")
     print("1.create new project")
     print("2.Get project details by ID")
-    print("3. ")
-    print("4. ")
-    print("5. ")
-    print("6. ")
-    print("7. ")
-    print("8. ")
     
 def project_tool_main():
 
