@@ -1,4 +1,4 @@
-import random
+aimport random
 import string
 import re
 import os
@@ -87,7 +87,7 @@ def project_date_too_close(projectDueDate):
     return True
     
 def get_details_by_ID():
-    search = 'Project ID: ' + (input("Enter Project ID to extract due date:"))
+    search = 'Project ID: ' + (input("Enter Project ID to extract details:"))
     list = create_list_from_file('Projects.txt','t')
     try:
         idIndex = int(list.index(search))
