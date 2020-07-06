@@ -2,15 +2,16 @@ import random
 import string
 import re
 import os
+import json 
 from datetime import date
 
 SIZE_OF_PROJECT_ID=10
+SIZE_OF_ENTRY_IN_PROJECT_LIST=3
 currentDate=date.today().strftime("%d/%m/%Y")
 
 def create_new_project():
     global currentDate
     print_project_instructions()
-    flags=[0,0,0]
     projectName=project_name_validation()
     projectDueDate=project_date_validation()
     while project_date_too_close(projectDueDate):
@@ -18,7 +19,7 @@ def create_new_project():
         projectDueDate=project_date_validation()
     print("Due Date is valid!: "+projectDueDate)
     projectID="".join(random.choices(string.ascii_uppercase + string.digits, k=SIZE_OF_PROJECT_ID))
-    print("ID generated for this project is: "+str(projectID))
+    print("ID generated for this project is: "+str(projectID))  
     file = open('Projects.txt', 'a')
     data_dict = {'Project ID:':projectID,"Project name:":projectName,'Project due date:':projectDueDate}
     for key,value in data_dict.items():
@@ -28,7 +29,7 @@ def create_new_project():
 
 def print_project_instructions():
     global currentDate
-    print("Instructions for new project:")
+    print("----------------------\nInstructions for new project:")
     print("1) Project name must only contain letters(both lower and upper case are acceptable)")
     print("2) Projects are identified by a "+str(SIZE_OF_PROJECT_ID)+" digit random generated serial number containing uppercase letters and numbers")
     print("3) Project due date must be entered as followed: DD/MM/YYYY")
@@ -91,8 +92,9 @@ def get_details_by_ID():
     list = create_list_from_file('Projects.txt','t')
     try:
         idIndex = int(list.index(search))
-    except ValueError:
+    except (ValueError):
         print('Project Id not found!')
+        return()
     print(list[idIndex + 1])
     print(list[idIndex + 2])
 
@@ -107,14 +109,11 @@ def create_list_from_file(filename,mode):
         print('Error! Check file ' + str(filename))
 
     list = file.readlines()
-
     index = 0
     file.close()
-
     while index < len(list):
         list[index] = list[index].rstrip('\n')
         index += 1
-
     return list
     
 def remove_duplicate_projects():
@@ -128,6 +127,7 @@ def remove_duplicate_projects():
             lines=f.readlines()
             intern_dict = {}
             for line in lines:
+                line=line.strip()
                 (key, val) = line.split(": ")
                 if key!="Project due date":
                     intern_dict[key]=val
@@ -135,49 +135,23 @@ def remove_duplicate_projects():
                     intern_dict[key]=val
                     projectDictList.append(intern_dict)
                     intern_dict = {}
-            # print("Type of global_list: {0}\n".format(type(projectDictList)))
-            # print(projectDictList)
-            # print("\nType of elements inside global_list\n")
-            # for i in projectDictList:
-                # print("{0}\tType: {1}".format(i, type(i)))
-                # print(projectDictList.index(i))
-            projectDictList=[dict(t) for t in {tuple(d.items()) for d in projectDictList}]
-            # print("Type of global_list: {0}\n".format(type(projectDictList)))
-            # print(projectDictList)
-            # print("\nType of elements inside global_list\n")
-            # for i in projectDictList:
-                # print("{0}\tType: {1}".format(i, type(i)))
-                # print(projectDictList.index(i))  
+            projectDictList=[dict(t) for t in {tuple(d.items()) for d in projectDictList}] 
             linesToRemove=[]
             for d in projectDictList:
                 currDate=d['Project due date']
                 currName=d['Project name']
                 dictIndex=projectDictList.index(d)
-                # print("d is: "+str(dictIndex))
                 i=dictIndex+1
                 for i in range(dictIndex+1,len(projectDictList)):
-                    # print("i is: "+str(i))
                     if (currDate==projectDictList[i]['Project due date']) and (currName==projectDictList[i]['Project name']):
                         linesToRemove.append(i)
-            # print("lines to remove: ")
             linesToRemove = list(dict.fromkeys(linesToRemove))
-            # print(linesToRemove)
             for i in linesToRemove:
-                # print("i is: "+str(i))
                 if i>=len(projectDictList):
                     projectDictList.pop()
                 else:
                     del projectDictList[i]
-            # print("Type of global_list: {0}\n".format(type(projectDictList)))
-            # print(projectDictList)
-            # print("\nType of elements inside global_list\n")
-            # for i in projectDictList:
-                # print("{0}\tType: {1}".format(i, type(i)))
-                # print(projectDictList.index(i))
-        with open("Projects.txt", "w") as f:
-            for line in projectDictList:
-                for key,value in line.items():
-                    f.write(str(key) + ": " + str(value))
+        update_file_from_list(projectDictList,"Projects.txt")
         print("Duplicate Projects removed from file Projects.txt!")
         
 def show_all_projects():
@@ -186,15 +160,78 @@ def show_all_projects():
     for i in list:
         if ("Project ID") in i:
             print("----------------------")
-        print(i+"\n")
-       
+        print(i)
+    print("----------------------")
+        
+def terminate_project():
+    search = 'Project ID: ' + (input("Enter Project ID you wish to terminate:"))
+    search=search.rstrip('\n')
+    list = create_list_from_file('Projects.txt','t')
+    try:
+        idIndex = int(list.index(search))
+    except ValueError:
+        print('Project Id not found!')
+        return()
+    for i in range(SIZE_OF_ENTRY_IN_PROJECT_LIST):
+        list.remove(list[idIndex])
+    update_file_from_list(list,'Projects.txt')
+    print(search+" has been terminated and removed from file")
+    
+def edit_project_details():
+    search = 'Project ID: ' + (input("Enter Project ID you wish to edit:\n"))
+    search=search.rstrip('\n')
+    list = create_list_from_file('Projects.txt','t')
+    try:
+        idIndex = int(list.index(search))
+    except ValueError:
+        print('Project Id not found!')
+        return()
+    repeatChoices=['y', 'yes', 'Y', 'YES']
+    repeat='y'
+    while repeat in repeatChoices:
+        choice=input("choose action: \nPress D to edit date\nPress N to edit name\n")
+        choice_list = ['d','D','date','Date','n','N','name','Name']
+        if choice in ['d','D','date','Date']:
+            print("Current "+ list[idIndex+2])
+            date=project_date_validation()
+            list[idIndex+2]="Project due date: "+date
+            print("Updated "+list[idIndex+2])
+                 
+        elif choice in ['n','N','name','Name']:
+            print("Current "+ list[idIndex+1])
+            name=project_name_validation()
+            list[idIndex+1]="Project name: "+name
+            print("Updated "+list[idIndex+1])
+        else:
+            print("Invalid input! please follow instructions")   
+        repeat=input("Would you like to preform another action?\n(press Yes or Y to edit more details, anything else to save edited information and return to menu)\n")
+    update_file_from_list(list,'Projects.txt')
+    print("All updates in: "+search+" has been succesfully made and written to Projects.txt!\n")
+    
+def update_file_from_list(list, filename_to_update):
+        with open("temp.txt", "w") as f:
+            for line in list:
+                if type(line) is not dict:
+                    splitString=line.split(": ")
+                    tempString=str('{"'+splitString[0]+'" : "'+splitString[1]+'"}')
+                    tempDict = json.loads(tempString)
+                    line=tempDict
+                for key,value in line.items():
+                    f.write(str(key) + ": " + str(value)+"\n")
+        os.remove(filename_to_update)
+        os.rename('temp.txt', filename_to_update)
+        
 def print_project_menu():
     print("Welcome to project management tool! please select an action")
     print("1.Create new project")
     print("2.Get project details by ID")
-    print("3.Remove duplicate projects")
-    print("4.Show all projects")
+    print("3.Terminate project")
+    print("4.Edit projects details")
     print("5.Check for projects that are due this week")
+    print("6.Show all projects")
+    print("7.Remove duplicate projects")
+    
+    
     
 def check_expiring_projects():
     global currentDate
@@ -230,14 +267,18 @@ def project_tool_main():
         elif choice == '2':
             get_details_by_ID()
         elif choice == '3':
-            remove_duplicate_projects()
+            terminate_project()
         elif choice == '4':
-            show_all_projects()
+            edit_project_details()
         elif choice == '5':
             check_expiring_projects()
+        elif choice == '6':
+            show_all_projects()
+        elif choice == '7':
+            remove_duplicate_projects()
         else:
             print("Invalid input!")
-        again = input("Would you like to preform another action?(Y/N)\n")
+        again = input("----------------------\nMain Project Tool Menu:\nWould you like to preform another action?(Y/N)\n")
 
     print("Goodbye!")
     
