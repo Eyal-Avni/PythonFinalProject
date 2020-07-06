@@ -32,7 +32,7 @@ def print_project_instructions():
     print("----------------------\nInstructions for new project:")
     print("1) Project name must only contain letters(both lower and upper case are acceptable)")
     print("2) Projects are identified by a "+str(SIZE_OF_PROJECT_ID)+" digit random generated serial number containing uppercase letters and numbers")
-    print("3) Project due date must be entered as followed: DD/MM/YYYY")
+    print("3) Project due date must be entered as followed: DD/MM/YYYY, assuming all months have 30 days")
     print("4) Project due date must be at least 7 days from: "+currentDate+" (current date)")
     print("5) Projects with identical names are possible\n")
     
@@ -48,7 +48,7 @@ def project_date_validation():
     dateFormat=re.compile(r'\d{2}[-/]\d{2}[-/]\d{4}')
     projectDueDate=input("Enter project due date\n")
     while (not dateFormat.match(projectDueDate)):
-        projectDueDate=input("Project Due date does not match format, please use DD/MM/YYYY \n")
+        projectDueDate=input("Project Due date does not match format, please use DD/MM/YYYY\n")
     days=projectDueDate.split("/")[0]
     months=projectDueDate.split("/")[1]
     years=projectDueDate.split("/")[2]
@@ -57,7 +57,7 @@ def project_date_validation():
         if (int(days) in range(1,31)):
             flags[0]=1
         else:
-            days=input("days not in range, please enter a vlaue between 1 to 31\n")
+            days=input("days not in range, please enter a vlaue between 1 to 30\n")
         if (int(months) in range(1,13)):
             flags[1]=1
         else:
@@ -80,7 +80,7 @@ def project_date_too_close(projectDueDate):
         if (months-currMonth)>1:
             return False
         elif (months-currMonth)==1:
-            if (30+(currDay-days))>=7:
+            if (30-currDay+days)>=7:
                 return False
         elif months==currMonth:
             if days>=(currDay+7):
@@ -106,8 +106,8 @@ def create_list_from_file(filename,mode):
         else:
             file= open(filename+'.bin','rb')
     except IOError:
-        print('Error! Check file ' + str(filename))
-
+        print('File ' + str(filename)+" was not found! new file was made!\n")
+        file = open(str(filename), 'a+')
     list = file.readlines()
     index = 0
     file.close()
@@ -118,7 +118,7 @@ def create_list_from_file(filename,mode):
     
 def remove_duplicate_projects():
     print("This action will look for projects with the same Name and Due date and will remove them from file")
-    print("Attention! removed projects cannot be restored")
+    print("Attention! removed projects cannot be restored and will not move to terminated file!")
     choice=input("Press Y or YES to delete, any other key to go back to menu\n")
     choice_list = ['y', 'yes', 'Y', 'YES']
     if choice in choice_list:
@@ -154,9 +154,9 @@ def remove_duplicate_projects():
         update_file_from_list(projectDictList,"Projects.txt")
         print("Duplicate Projects removed from file Projects.txt!")
         
-def show_all_projects():
-    print("All the projects in company:")
-    list = create_list_from_file('Projects.txt','t')
+def show_projects(file,headline):
+    print("projects in "+headline+" Projects file :")
+    list = create_list_from_file(file,'t')
     for i in list:
         if ("Project ID") in i:
             print("----------------------")
@@ -164,18 +164,27 @@ def show_all_projects():
     print("----------------------")
         
 def terminate_project():
-    search = 'Project ID: ' + (input("Enter Project ID you wish to terminate:"))
-    search=search.rstrip('\n')
-    list = create_list_from_file('Projects.txt','t')
-    try:
-        idIndex = int(list.index(search))
-    except ValueError:
-        print('Project Id not found!')
-        return()
-    for i in range(SIZE_OF_ENTRY_IN_PROJECT_LIST):
-        list.remove(list[idIndex])
-    update_file_from_list(list,'Projects.txt')
-    print(search+" has been terminated and removed from file")
+    print("Terminated projects will be removed from current project file and written to terminated projects file")
+    choice=input("Press Y or YES to begin termination process, any other key to go back to menu\n")
+    choice_list = ['y', 'yes', 'Y', 'YES']
+    if choice in choice_list:
+        search = 'Project ID: ' + (input("Enter Project ID you wish to terminate:"))
+        search=search.rstrip('\n')
+        list = create_list_from_file('Projects.txt','t')
+        termiList=create_list_from_file('TermiProjects.txt','t')
+        try:
+            idIndex = int(list.index(search))
+        except ValueError:
+            print('Project Id not found!')
+            return()
+        for i in range(SIZE_OF_ENTRY_IN_PROJECT_LIST):
+            termiList.append(list[idIndex])
+            list.remove(list[idIndex])
+        global currentDate
+        termiList.append("Project termination date: "+currentDate)
+        update_file_from_list(list,'Projects.txt')
+        update_file_from_list(termiList,'TermiProjects.txt')
+        print(search+" has been terminated!")
     
 def edit_project_details():
     search = 'Project ID: ' + (input("Enter Project ID you wish to edit:\n"))
@@ -209,27 +218,31 @@ def edit_project_details():
     print("All updates in: "+search+" has been succesfully made and written to Projects.txt!\n")
     
 def update_file_from_list(list, filename_to_update):
-        with open("temp.txt", "w") as f:
-            for line in list:
-                if type(line) is not dict:
-                    splitString=line.split(": ")
-                    tempString=str('{"'+splitString[0]+'" : "'+splitString[1]+'"}')
-                    tempDict = json.loads(tempString)
-                    line=tempDict
-                for key,value in line.items():
-                    f.write(str(key) + ": " + str(value)+"\n")
+    with open("temp.txt", "w") as f:
+        for line in list:
+            if type(line) is not dict:
+                splitString=line.split(": ")
+                tempString=str('{"'+splitString[0]+'" : "'+splitString[1]+'"}')
+                tempDict = json.loads(tempString)
+                line=tempDict
+            for key,value in line.items():
+                f.write(str(key) + ": " + str(value)+"\n")
+    try:
         os.remove(filename_to_update)
-        os.rename('temp.txt', filename_to_update)
+    except(FileNotFoundError):
+        print("file not found!")
+    os.rename('temp.txt', filename_to_update)
         
 def print_project_menu():
     print("Welcome to project management tool! please select an action")
     print("1.Create new project")
     print("2.Get project details by ID")
     print("3.Terminate project")
-    print("4.Edit projects details")
+    print("4.Edit project details")
     print("5.Check for projects that are due this week")
-    print("6.Show all projects")
-    print("7.Remove duplicate projects")
+    print("6.Show current projects")
+    print("7.Show terminated projects")
+    print("8.Remove duplicate projects")
     
     
     
@@ -273,8 +286,10 @@ def project_tool_main():
         elif choice == '5':
             check_expiring_projects()
         elif choice == '6':
-            show_all_projects()
+            show_projects("Projects.txt","Current")
         elif choice == '7':
+            show_projects("TermiProjects.txt","Terminated")
+        elif choice == '8':
             remove_duplicate_projects()
         else:
             print("Invalid input!")
