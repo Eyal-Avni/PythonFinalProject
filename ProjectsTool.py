@@ -4,9 +4,11 @@ import re
 import os
 import json 
 from datetime import date
+import datetime
+import matplotlib.pyplot as plt
 
 SIZE_OF_PROJECT_ID=10
-SIZE_OF_ENTRY_IN_PROJECT_LIST=3
+SIZE_OF_ENTRY_IN_PROJECT_LIST=4
 currentDate=date.today().strftime("%d/%m/%Y")
 
 def create_new_project():
@@ -21,11 +23,11 @@ def create_new_project():
     projectID="".join(random.choices(string.ascii_uppercase + string.digits, k=SIZE_OF_PROJECT_ID))
     print("ID generated for this project is: "+str(projectID))  
     file = open('Projects.txt', 'a')
-    data_dict = {'Project ID:':projectID,"Project name:":projectName,'Project due date:':projectDueDate}
+    data_dict = {'Project ID:':projectID,"Project name:":projectName,"Project acceptance date:":currentDate,'Project due date:':projectDueDate}
     for key,value in data_dict.items():
         file.write(str(key) + " " + str(value)+'\n')
     file.close()
-    print('Project name: ' + projectName + '\nProject due date: ' + projectDueDate, '\nProject ID: ' + projectID + "\nwere succesfully written to file!")
+    print('Project name: ' + projectName+ '\nProject acceptance date: '+currentDate + '\nProject due date: ' + projectDueDate, '\nProject ID: ' + projectID + "\nwere succesfully written to file!")
 
 def print_project_instructions():
     global currentDate
@@ -97,7 +99,7 @@ def get_details_by_ID():
         return()
     print(list[idIndex + 1])
     print(list[idIndex + 2])
-
+    print(list[idIndex + 3])
 
 def create_list_from_file(filename,mode):
     try:
@@ -201,10 +203,10 @@ def edit_project_details():
         choice=input("choose action: \nPress D to edit date\nPress N to edit name\n")
         choice_list = ['d','D','date','Date','n','N','name','Name']
         if choice in ['d','D','date','Date']:
-            print("Current "+ list[idIndex+2])
+            print("Current "+ list[idIndex+3])
             date=project_date_validation()
             list[idIndex+2]="Project due date: "+date
-            print("Updated "+list[idIndex+2])
+            print("Updated "+list[idIndex+3])
                  
         elif choice in ['n','N','name','Name']:
             print("Current "+ list[idIndex+1])
@@ -232,7 +234,59 @@ def update_file_from_list(list, filename_to_update):
     except(FileNotFoundError):
         print("file not found!")
     os.rename('temp.txt', filename_to_update)
+
+def get_handle_time_list():
+    list = create_list_from_file('TermiProjects.txt','t')
+    handleList=[]
+    flag=[0,0]
+    for i in list:
+        if ("Project acceptance date") in i:
+            accDate=i.split(": ")
+            accDay=int(accDate[1].split("/")[0])
+            accMonth=int(accDate[1].split("/")[1])
+            accYear=int(accDate[1].split("/")[2])
+            accDateObj=datetime.date(accYear, accMonth, accDay)
+            flag[0]=1
+            # print("due date: "+str(dueDate))
+        if ("Project termination date") in i:
+            termiDate=i.split(": ")
+            termiDay=int(termiDate[1].split("/")[0])
+            termiMonth=int(termiDate[1].split("/")[1])
+            termiYear=int(termiDate[1].split("/")[2])
+            termDateObj=datetime.date(termiYear, termiMonth, termiDay)
+            flag[1]=1
+            # print("termi date: "+str(termiDate))
+        if flag==[1,1]:
+            handleTimeObj=termDateObj-accDateObj
+            handleList.append(int(handleTimeObj.total_seconds()/24/60/60))
+            flag=[0,0]           
+    return handleList
+    
+def get_handle_graph_list():
+    handleList=get_handle_time_list()
+    graphList=[0,0,0,0]
+    for i in handleList:
+        if i<=14:
+            graphList[0]=graphList[0]+1
+        elif i<=30:
+            graphList[1]=graphList[1]+1
+        elif i<=120:
+            graphList[2]=graphList[2]+1
+        elif i>120:
+            graphList[3]=graphList[3]+1
+    return graphList
         
+
+def show_handle_time_chart():
+    fig,ax = plt.subplots()
+    plt.title('Project Handle Time')
+    timeLabels = ['two weeks\n or less', 'two weeks\n to \none month','one month\n to \nsix months','six months\n or more']
+    data=get_handle_graph_list()
+    timeBar=ax.bar(timeLabels,data,color=['green', 'yellow', 'orange', 'red'],edgecolor='black')
+    ax.set_ylabel('Number of projects') 
+    plt.show()
+    
+
 def print_project_menu():
     print("Welcome to project management tool! please select an action")
     print("1.Create new project")
@@ -243,6 +297,7 @@ def print_project_menu():
     print("6.Show current projects")
     print("7.Show terminated projects")
     print("8.Remove duplicate projects")
+    print("9.Show handle time chart")
     
     
     
@@ -274,7 +329,7 @@ def project_tool_main():
     while again in choice_list:
 
         print_project_menu()
-        choice = input("Enter 1-8 from the menu:\n")
+        choice = input("Enter your selection from the menu:\n")
         if choice == '1':
             create_new_project()
         elif choice == '2':
@@ -291,12 +346,15 @@ def project_tool_main():
             show_projects("TermiProjects.txt","Terminated")
         elif choice == '8':
             remove_duplicate_projects()
+        elif choice == '9':
+            show_handle_time_chart()
+        elif choice == '10':
+            get_handle_time_list()
         else:
             print("Invalid input!")
         again = input("----------------------\nMain Project Tool Menu:\nWould you like to preform another action?(Y/N)\n")
 
     print("Goodbye!")
-    
-     
+       
     
 project_tool_main()
