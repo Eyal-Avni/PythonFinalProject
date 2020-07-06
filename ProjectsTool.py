@@ -348,8 +348,6 @@ def project_tool_main():
             remove_duplicate_projects()
         elif choice == '9':
             show_handle_time_chart()
-        elif choice == '10':
-            get_handle_time_list()
         else:
             print("Invalid input!")
         again = input("----------------------\nMain Project Tool Menu:\nWould you like to preform another action?(Y/N)\n")
