@@ -17,7 +17,7 @@ def create_new_project():
     projectName=project_name_validation()
     projectDueDate=project_date_validation()
     while project_date_too_close(projectDueDate):
-        print("Due date too close, please make sue date is at least 7 days after: "+currentDate)
+        print("Due date too close, please make sure date is at least 7 days after: "+currentDate+" (current date)")
         projectDueDate=project_date_validation()
     print("Due Date is valid!: "+projectDueDate)
     projectID="".join(random.choices(string.ascii_uppercase + string.digits, k=SIZE_OF_PROJECT_ID))
@@ -295,12 +295,13 @@ def show_handle_time_chart():
     data=get_handle_graph_list()
     timeBar=ax.bar(timeLabels,data,color=['green', 'yellow', 'orange', 'red'],edgecolor='black')
     ax.set_ylabel('Number of projects') 
+    ax.set_xlabel('Time took to complete ') 
     plt.show()
     
 def show_on_time_completion_percentage():
     plt.title('On-Time Completion Chart')
     data = get_late_graph_list()
-    Labels = ['One_time','Late',]
+    Labels = ['Completed on time','Completed late',]
     explode = (0, 0.4)
     plt.pie(data, labels=Labels, explode=explode, startangle=90, autopct='%d%%',colors=["Green","red"])
     plt.show()
@@ -316,8 +317,8 @@ def print_project_menu():
     print("6.Show current projects")
     print("7.Show terminated projects")
     print("8.Remove duplicate projects")
-    print("9.Show handle time chart")
-    print("10.On-Time Completion Chart")
+    print("9.Show Handle Time chart")
+    print("10.Show On-Time Completion Chart")
     
     
     
