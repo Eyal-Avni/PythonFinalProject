@@ -200,7 +200,7 @@ def edit_project_details():
     repeatChoices=['y', 'yes', 'Y', 'YES']
     repeat='y'
     while repeat in repeatChoices:
-        choice=input("choose action: \nPress D to edit date\nPress N to edit name\n")
+        choice=input("choose action: \nPress D to edit due date\nPress N to edit name\n")
         choice_list = ['d','D','date','Date','n','N','name','Name']
         if choice in ['d','D','date','Date']:
             print("Current "+ list[idIndex+3])
