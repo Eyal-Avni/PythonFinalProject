@@ -34,7 +34,7 @@ def print_project_instructions():
     print("----------------------\nInstructions for new project:")
     print("1) Project name must only contain letters(both lower and upper case are acceptable)")
     print("2) Projects are identified by a "+str(SIZE_OF_PROJECT_ID)+" digit random generated serial number containing uppercase letters and numbers")
-    print("3) Project due date must be entered as followed: DD/MM/YYYY, assuming all months have 30 days")
+    print("3) Project due date must be entered as follows: DD/MM/YYYY, assuming all months have 30 days")
     print("4) Project due date must be at least 7 days from: "+currentDate+" (current date)")
     print("5) Projects with identical names are possible\n")
     
@@ -235,12 +235,12 @@ def update_file_from_list(list, filename_to_update):
         print("file not found!")
     os.rename('temp.txt', filename_to_update)
 
-def get_handle_time_list():
+def get_time_list(lookFor):
     list = create_list_from_file('TermiProjects.txt','t')
     handleList=[]
     flag=[0,0]
     for i in list:
-        if ("Project acceptance date") in i:
+        if (lookFor) in i:
             accDate=i.split(": ")
             accDay=int(accDate[1].split("/")[0])
             accMonth=int(accDate[1].split("/")[1])
@@ -262,8 +262,19 @@ def get_handle_time_list():
             flag=[0,0]           
     return handleList
     
+def get_late_graph_list():
+    handleList=get_time_list("Project due date:")
+    graphList=[0,0]
+    for i in handleList:
+        if i<0:
+            graphList[0]=graphList[0]+1
+        else:
+            graphList[1]=graphList[1]+1
+    return graphList
+    
+    
 def get_handle_graph_list():
-    handleList=get_handle_time_list()
+    handleList=get_time_list("Project acceptance date")
     graphList=[0,0,0,0]
     for i in handleList:
         if i<=14:
@@ -279,11 +290,19 @@ def get_handle_graph_list():
 
 def show_handle_time_chart():
     fig,ax = plt.subplots()
-    plt.title('Project Handle Time')
+    plt.title('Project Handle Time Chart')
     timeLabels = ['two weeks\n or less', 'two weeks\n to \none month','one month\n to \nsix months','six months\n or more']
     data=get_handle_graph_list()
     timeBar=ax.bar(timeLabels,data,color=['green', 'yellow', 'orange', 'red'],edgecolor='black')
     ax.set_ylabel('Number of projects') 
+    plt.show()
+    
+def show_on_time_completion_percentage():
+    plt.title('On-Time Completion Chart')
+    data = get_late_graph_list()
+    Labels = ['One_time','Late',]
+    explode = (0, 0.4)
+    plt.pie(data, labels=Labels, explode=explode, startangle=90, autopct='%d%%',colors=["Green","red"])
     plt.show()
     
 
@@ -298,6 +317,7 @@ def print_project_menu():
     print("7.Show terminated projects")
     print("8.Remove duplicate projects")
     print("9.Show handle time chart")
+    print("10.On-Time Completion Chart")
     
     
     
@@ -348,6 +368,8 @@ def project_tool_main():
             remove_duplicate_projects()
         elif choice == '9':
             show_handle_time_chart()
+        elif choice == '10':
+            show_on_time_completion_percentage()
         else:
             print("Invalid input!")
         again = input("----------------------\nMain Project Tool Menu:\nWould you like to preform another action?(Y/N)\n")
