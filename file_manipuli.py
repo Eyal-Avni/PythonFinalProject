@@ -1,3 +1,4 @@
+import os
 def update_bin_file_from_list(list,filename_to_update):
     file = open('temp.txt', 'wb')
     for item in list:
