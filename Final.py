@@ -1,35 +1,46 @@
 ROWS_OF_INFO_PER_PERSON=6
 EMPLOYEES_FILE_GIVEN_NAME='Employees.txt'
 PASSWORD_FILE_GIVEN_NAME='Passwords.bin'
-
+SIZE_OF_INITAIL_PASS=7
+import random
 import matplotlib.pyplot as plt
 import input_validation
 import file_manipuli
+import re
+import string
 
+def set_employee_password(emploID):
 
-def set_employee_password(emploID, name):
-    flag=0
-    while flag==0:
-        password=input("Enter "+name+" password:")
-        if input_validation.check_password(password):
-            flag=1
+    digits_from_id=emploID[:3]
+    password ="".join(random.choices(string.ascii_uppercase + string.digits, k=SIZE_OF_INITAIL_PASS))
+
     file=open(PASSWORD_FILE_GIVEN_NAME,'ab')
-    file.write(emploID.encode()+":".encode()+password.encode()+"\n".encode())
+    file.write(emploID.encode()+":".encode()+digits_from_id.encode()+password.encode()+"\n".encode())
     file.close()
 
 def get_employee_info():
-    first=input("Enter employee's first name: ")
-    last = input("Enter " +first+ "'s last name: ")
+
+    flags=[0,0,0,0,0]
+
+    while flags[4]==0:
+        try:
+            first=input("Enter employee's first name: ")
+            temp=1/input_validation.check_name(first)
+            last = input("Enter " +first+ "'s last name: ")
+            flags[4]=1/input_validation.check_name(last)
+        except ZeroDivisionError:
+            print('Error! name must contain alphabet characters only!')
+
     full_name=first+" "+last
 
-    flags=[0,0,0,0]
     while flags[0]==0:
         try:
             ID =int(input("Enter " + full_name + "'s ID number: "))
-            flags[0]=1
+            flags[0]=int(1/input_validation.check_ID(ID))
         except ValueError:
             print('Error! invalid input, numbers only!')
-
+        except ZeroDivisionError:
+            print('Error! invalid ID length!')
 
     while flags[1]==0:
         gender = input('Enter gender(Male/Female):')
@@ -54,7 +65,7 @@ def get_employee_info():
         else:
             print("Invalid email address!")
 
-    set_employee_password(str(ID),full_name)
+    set_employee_password(str(ID))
 
     data_list=[]
     data_list.append('ID number:'+str(ID))
