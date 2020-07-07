@@ -1,3 +1,4 @@
+import string
 def check_email_val(string):
     length = False
     at_sign = False
@@ -44,3 +45,17 @@ def check_password(string):
     else:
         print('Invalid password strength!')
         return False
+
+def check_ID(string):
+    if len(str(string))<9:
+        return 0
+    else:
+        return 1
+
+def check_name(string):
+    if string.isalpha():
+        return 1
+    else:
+        return 0
+
+
