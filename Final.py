@@ -216,7 +216,6 @@ def print_password_instructions():
     print('Your password must contain at least one uppercase letter')
     print('Your password must contain at least one number digit ')
 
-
 def main():
 
 
