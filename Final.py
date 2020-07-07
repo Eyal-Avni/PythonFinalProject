@@ -1,7 +1,7 @@
 ROWS_OF_INFO_PER_PERSON=6
 EMPLOYEES_FILE_GIVEN_NAME='Employees.txt'
 PASSWORD_FILE_GIVEN_NAME='Passwords.bin'
-import os
+
 import matplotlib.pyplot as plt
 import input_validation
 import file_manipuli
@@ -48,11 +48,11 @@ def get_employee_info():
     department =input("Enter "+full_name+" depatment: ")
 
     while flags[3]==0:
-        email = input("Enter " + full_name + "'s email adress: ")
+        email = input("Enter " + full_name + "'s email address: ")
         if input_validation.check_email_val(email):
             flags[3]=1
         else:
-            print("Invalid email adress!")
+            print("Invalid email address!")
 
     set_employee_password(str(ID),full_name)
 
@@ -61,13 +61,13 @@ def get_employee_info():
     data_list.append('Full name:'+full_name)
     data_list.append('Gender:'+gender)
     data_list.append('Department:'+department)
-    data_list.append('Email adress:'+email)
+    data_list.append('Email address:'+email)
     data_list.append('Phone number:'+str(phone))
 
     return data_list
 
 def change_password(pass_filename):
-    search=input("Enter the employee's ID")
+    search=input("Enter the employee's ID:")
     pass_dici = file_manipuli.binfile_to_dici(pass_filename)
 
 
@@ -89,8 +89,8 @@ def change_password(pass_filename):
     else:
         print('ID was not found!')
 
-def delete_employee(filename):
-    list = file_manipuli.txt_file_to_list(filename)
+def delete_employee(empl_filename,pass_filename):
+    list = file_manipuli.txt_file_to_list(empl_filename)
     flag=0
     while flag==0:
         search =(input("Enter ID number to delete:"))
@@ -105,9 +105,9 @@ def delete_employee(filename):
     while i < ROWS_OF_INFO_PER_PERSON:  # כמספר השורות מידע על כל בן אדם
         list.remove(list[index])  # לא מעדכנים את האינדקס למחיקה כי לאחר כל מחיקה הרשימה מצטמצמת ומעדכנת אינדקסים
         i += 1
-    file_manipuli.update_file_from_list(list,EMPLOYEES_FILE_GIVEN_NAME,'t')
+    file_manipuli.update_file_from_list(list,empl_filename,'t')
 
-    pass_list=file_manipuli.binfile_to_list(PASSWORD_FILE_GIVEN_NAME)
+    pass_list=file_manipuli.binfile_to_list(pass_filename)
     i=0
     while i<len(pass_list):
         if pass_list[i].startswith(search):
@@ -116,8 +116,8 @@ def delete_employee(filename):
 
     file_manipuli.update_bin_file_from_list(pass_list,PASSWORD_FILE_GIVEN_NAME)
 
-def change_depart(filename):
-    list = file_manipuli.txt_file_to_list(filename)
+def change_depart(empl_filename):
+    list = file_manipuli.txt_file_to_list(empl_filename)
     search = 'ID number:'+(input("Enter ID number to update:"))
     try:
         idIndex = int(list.index(search))
@@ -128,6 +128,30 @@ def change_depart(filename):
     list[dept_index] = 'Department:' + str(new_dept)
     file_manipuli.update_file_from_list(list,EMPLOYEES_FILE_GIVEN_NAME,'t')
     print("Department updated!\n")
+
+def get_phone_by_ID(empl_filename):
+    search = 'ID number:' + (input("Enter ID number to extract phone number:"))
+    list = file_manipuli.txt_file_to_list(empl_filename)
+
+    try:
+        idIndex = int(list.index(search))
+
+    except ValueError:
+        print('Id not found!')
+
+    print(list[idIndex + 5])
+
+def get_email_by_name(empl_filename):
+    search = 'Full name:'+ (input("Enter full name to extract email address:"))
+    list = file_manipuli.txt_file_to_list(empl_filename)
+
+    try:
+        idIndex = int(list.index(search))
+
+    except ValueError:
+        print('Id not found!')
+
+    print(list[idIndex + 3])
 
 def get_mf_ratio():
     data_list=file_manipuli.txt_file_to_list('Employees.txt')
@@ -152,19 +176,35 @@ def get_mf_ratio():
 
     plt.show()
 
+def show_emp_name_list(empl_filename):
+    list=file_manipuli.txt_file_to_list(empl_filename)
+    emp_index=1
+    i=1
+    j=0
+    print('Employees list:')
+    while j<len(list):
+
+        print(str(emp_index)+'.'+list[i+j].strip('Full name:'))
+        emp_index+=1
+        j+=6
+
 def print_menu():
     print("Hello ! what would you like to do?  ")
     print("1.Open new employee card")
     print("2.Change employee's password")
     print("3.Chnage employee's department ")
-    print("4.Delete employee")
-    print("5.Show Male/Female ratio")
+    print("4.Show employee's phone number by ID ")
+    print("5.Show employee's email by full name")
+    print("6.Delete employee")
+    print("7.Show Male/Female ratio")
+    print("8.Show Employee's name list")
 
 def print_password_instructions():
     print('Attention!')
     print('Your password must be at least 7 characters long')
     print('Your password must contain at least one uppercase letter')
     print('Your password must contain at least one number digit ')
+
 
 def main():
 
@@ -175,7 +215,7 @@ def main():
     while again in choice_list:
 
         print_menu()
-        choice = input("Enter 1-5 from the menu:")
+        choice = input("Enter 1-8 from the menu:")
         if choice == '1':
             info=get_employee_info()
             file_manipuli.add_to_file_from_list(info,EMPLOYEES_FILE_GIVEN_NAME)
@@ -184,10 +224,15 @@ def main():
         elif choice == '3':
             change_depart(EMPLOYEES_FILE_GIVEN_NAME)
         elif choice == '4':
-            delete_employee(EMPLOYEES_FILE_GIVEN_NAME)
+            get_phone_by_ID(EMPLOYEES_FILE_GIVEN_NAME)
         elif choice == '5':
+            get_email_by_name(EMPLOYEES_FILE_GIVEN_NAME)
+        elif choice == '6':
+            delete_employee(EMPLOYEES_FILE_GIVEN_NAME, PASSWORD_FILE_GIVEN_NAME)
+        elif choice == '7':
             get_mf_ratio()
-
+        elif choice=='8':
+            show_emp_name_list(EMPLOYEES_FILE_GIVEN_NAME)
         else:
             print("Invalid input!")
         again = input("Would you like to preform another action?(Y/N) ")
