@@ -47,7 +47,7 @@ def check_password(string):
         return False
 
 def check_ID(string):
-    if len(str(string))<9:
+    if len(str(string))<9 or not string.isdigit():
         return 0
     else:
         return 1
