@@ -109,7 +109,7 @@ def remove_duplicate_projects():
                     projectDictList.pop()
                 else:
                     del projectDictList[i]
-        file_manipuli.update_file_from_list(projectDictList,"Projects.txt")
+        file_manipuli.update_file_from_DictList(projectDictList,"Projects.txt")
         print("Duplicate Projects removed from file Projects.txt!")
         
 def show_projects(file,headline):
@@ -140,8 +140,8 @@ def terminate_project():
             list.remove(list[idIndex])
         global currentDate
         termiList.append("Project termination date: "+currentDate)
-        file_manipuli.update_file_from_list(list,'Projects.txt')
-        file_manipuli.update_file_from_list(termiList,'TermiProjects.txt')
+        file_manipuli.update_file_from_DictList(list,'Projects.txt')
+        file_manipuli.update_file_from_DictList(termiList,'TermiProjects.txt')
         print(search+" has been terminated!")
     
 def edit_project_details():
@@ -172,7 +172,7 @@ def edit_project_details():
         else:
             print("Invalid input! please follow instructions")   
         repeat=input("Would you like to preform another action?\n(press Yes or Y to edit more details, anything else to save edited information and return to menu)\n")
-    file_manipuli.update_file_from_list(list,'Projects.txt')
+    file_manipuli.update_file_from_DictList(list,'Projects.txt')
     print("All updates in: "+search+" has been succesfully made and written to Projects.txt!\n")
     
 

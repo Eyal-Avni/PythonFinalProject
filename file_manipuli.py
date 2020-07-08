@@ -9,6 +9,7 @@ def update_bin_file_from_list(list,filename_to_update):
     file.close()
     os.remove(filename_to_update)
     os.rename('temp.txt', filename_to_update)
+    
 def update_file_from_list(list, filename_to_update,mode):
     if mode=='b':
         file = open('temp', 'wb')
@@ -84,7 +85,7 @@ def txt_file_to_list(filename):
     return list
     
     
-def update_file_from_list(list, filename_to_update):
+def update_file_from_DictList(list, filename_to_update):
     with open("temp.txt", "w") as f:
         for line in list:
             if type(line) is not dict:
