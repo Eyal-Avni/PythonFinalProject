@@ -71,7 +71,8 @@ def txt_file_to_list(filename):
     try:
         file = open(filename,'r')
     except IOError:
-         print('Error! Check file '+ filename)
+         print('File ' + str(filename)+" was not found! new file was made!\n")
+         file = open(str(filename), 'a+')
 
     list = file.readlines()
     index = 0
