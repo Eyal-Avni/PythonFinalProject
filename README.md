@@ -21,3 +21,4 @@ Yaacov Amin<br/>
 run MainMenu.py<br/>
 **Option B**:<br/>
 run PythonFinalProject.exe located in release v1.0 <br/>
+(This option is much slower)
