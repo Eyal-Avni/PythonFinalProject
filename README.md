@@ -1,6 +1,6 @@
 # PythonFinalProject
 This is our final project for Pyhton programming class, Information systems studies, MTA.<br/>
-The program simulates a basic information system for Sapiens comapny.<br/>
+The program simulates a basic information system for Sapiens company.<br/>
 The information system includes 2 modules:<br/>
 
  1)Employee managment tool<br/>
