@@ -244,7 +244,7 @@ def show_on_time_completion_percentage():
     data = get_late_graph_list()
     Labels = ['Completed on time','Completed late',]
     explode = (0, 0.4)
-    plt.pie(data, labels=Labels, explode=explode, startangle=0, autopct='%d%%',colors=["Green","red"])
+    plt.pie(data, labels=Labels, explode=explode, startangle=0, autopct='%1.1f%%',colors=["Green","red"],shadow=True)
     plt.show()
     
 
