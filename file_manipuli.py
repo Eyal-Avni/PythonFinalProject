@@ -83,22 +83,6 @@ def txt_file_to_list(filename):
 
     return list
     
-# def create_list_from_file(filename,mode):
-    # try:
-        # if mode=='t':
-            # file = open(str(filename), 'r')
-        # else:
-            # file= open(filename+'.bin','rb')
-    # except IOError:
-        # print('File ' + str(filename)+" was not found! new file was made!\n")
-        # file = open(str(filename), 'a+')
-    # list = file.readlines()
-    # index = 0
-    # file.close()
-    # while index < len(list):
-        # list[index] = list[index].rstrip('\n')
-        # index += 1
-    # return list
     
 def update_file_from_list(list, filename_to_update):
     with open("temp.txt", "w") as f:
