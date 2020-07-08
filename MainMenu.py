@@ -18,7 +18,6 @@ def main_menu_main():
     again = 'y'
     choice_list = ['y', 'yes', 'Y', 'YES']
     while again in choice_list:
-        print_logo()
         show_main_menu()
         choice = input("Please Enter your selection from the menu:\n")
         if choice == '1':
@@ -27,8 +26,10 @@ def main_menu_main():
             ProjectsTool.project_tool_main()
         else:
             print("Invalid input!")
+        print_logo()
         again = input("----------------------\nSapiens Information System:\nWould you like to preform another action?(Y/N)\n")
 
     print("Goodbye!")
     
+print_logo()    
 main_menu_main()
