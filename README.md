@@ -1,5 +1,5 @@
 # PythonFinalProject
-This is our final project for Pyhton programing class, Information systems studies, MTA.<br/>
+This is our final project for Pyhton programming class, Information systems studies, MTA.<br/>
 The program simulates a basic information system for Sapiens comapny.<br/>
 The information system includes 2 modules:<br/>
 
