@@ -20,4 +20,4 @@ Yaacov Amin<br/>
 **Option A**:<br/>
 run MainMenu.py<br/>
 **Option B**:<br/>
-run PythonFinalProject.exe located in release v1.0 <br/>
+run PythonFinalProject.exe located in release v1. 0 <br/>
