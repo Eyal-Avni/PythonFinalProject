@@ -208,7 +208,9 @@ def print_menu():
     print("5.Show employee's email by full name")
     print("6.Delete employee")
     print("7.Show Male/Female ratio")
-    print("8.Show Employee's name list")
+    print("8.Show Employee's name list\n")
+    print("0.Return to Sapiens Information System menu")
+    print("-------------------------------------------")
 
 def print_password_instructions():
     print('Attention!')
@@ -216,7 +218,7 @@ def print_password_instructions():
     print('Your password must contain at least one uppercase letter')
     print('Your password must contain at least one number digit ')
 
-def main():
+def employee_main():
 
 
 
@@ -243,12 +245,8 @@ def main():
             get_mf_ratio()
         elif choice=='8':
             show_emp_name_list(EMPLOYEES_FILE_GIVEN_NAME)
+        elif choice=='0':
+            return
         else:
             print("Invalid input!")
-        again = input("Would you like to preform another action?(Y/N) ")
-
-    print("Goodbye!")
-
-
-
-main()
+        again = input("----------------------\nEmployee Tool Menu:\nWould you like to preform another action?(Y/N)\n")

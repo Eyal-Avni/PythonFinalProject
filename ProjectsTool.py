@@ -259,7 +259,9 @@ def print_project_menu():
     print("7.Show terminated projects")
     print("8.Remove duplicate projects")
     print("9.Show Handle Time chart")
-    print("10.Show On-Time Completion Chart")
+    print("10.Show On-Time Completion Chart\n")
+    print("0.Return to Sapiens Information System menu")
+    print("-------------------------------------------")
     
     
     
@@ -312,11 +314,9 @@ def project_tool_main():
             show_handle_time_chart()
         elif choice == '10':
             show_on_time_completion_percentage()
+        elif choice=='0':
+            return
         else:
             print("Invalid input!")
-        again = input("----------------------\nMain Project Tool Menu:\nWould you like to preform another action?(Y/N)\n")
-
-    print("Goodbye!")
-       
+        again = input("----------------------\nProject Tool Menu:\nWould you like to preform another action?(Y/N)\n")
     
-project_tool_main()
