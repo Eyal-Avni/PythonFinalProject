@@ -195,7 +195,7 @@ def show_emp_name_list(empl_filename):
     print('Employees list:')
     while j<len(list):
 
-        print(str(emp_index)+'.'+list[i+j].strip('Full name:'))
+        print(str(emp_index)+'.'+list[i+j].strip('Full name'))
         emp_index+=1
         j+=6
 
