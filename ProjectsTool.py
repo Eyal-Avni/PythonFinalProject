@@ -2,9 +2,9 @@ import random
 import string
 import re
 import os
-import json 
 from datetime import date
 import datetime
+import file_manipuli
 import matplotlib.pyplot as plt
 
 SIZE_OF_PROJECT_ID=10
@@ -91,7 +91,7 @@ def project_date_too_close(projectDueDate):
     
 def get_details_by_ID():
     search = 'Project ID: ' + (input("Enter Project ID to extract details:"))
-    list = create_list_from_file('Projects.txt','t')
+    list = file_manipuli.txt_file_to_list('Projects.txt')
     try:
         idIndex = int(list.index(search))
     except (ValueError):
@@ -101,22 +101,6 @@ def get_details_by_ID():
     print(list[idIndex + 2])
     print(list[idIndex + 3])
 
-def create_list_from_file(filename,mode):
-    try:
-        if mode=='t':
-            file = open(str(filename), 'r')
-        else:
-            file= open(filename+'.bin','rb')
-    except IOError:
-        print('File ' + str(filename)+" was not found! new file was made!\n")
-        file = open(str(filename), 'a+')
-    list = file.readlines()
-    index = 0
-    file.close()
-    while index < len(list):
-        list[index] = list[index].rstrip('\n')
-        index += 1
-    return list
     
 def remove_duplicate_projects():
     print("This action will look for projects with the same Name and Due date and will remove them from file")
@@ -153,12 +137,12 @@ def remove_duplicate_projects():
                     projectDictList.pop()
                 else:
                     del projectDictList[i]
-        update_file_from_list(projectDictList,"Projects.txt")
+        file_manipuli.update_file_from_list(projectDictList,"Projects.txt")
         print("Duplicate Projects removed from file Projects.txt!")
         
 def show_projects(file,headline):
     print("projects in "+headline+" Projects file :")
-    list = create_list_from_file(file,'t')
+    list = file_manipuli.txt_file_to_list(file)
     for i in list:
         if ("Project ID") in i:
             print("----------------------")
@@ -172,8 +156,8 @@ def terminate_project():
     if choice in choice_list:
         search = 'Project ID: ' + (input("Enter Project ID you wish to terminate:"))
         search=search.rstrip('\n')
-        list = create_list_from_file('Projects.txt','t')
-        termiList=create_list_from_file('TermiProjects.txt','t')
+        list = file_manipuli.txt_file_to_list('Projects.txt')
+        termiList=file_manipuli.txt_file_to_list('TermiProjects.txt')
         try:
             idIndex = int(list.index(search))
         except ValueError:
@@ -184,14 +168,14 @@ def terminate_project():
             list.remove(list[idIndex])
         global currentDate
         termiList.append("Project termination date: "+currentDate)
-        update_file_from_list(list,'Projects.txt')
-        update_file_from_list(termiList,'TermiProjects.txt')
+        file_manipuli.update_file_from_list(list,'Projects.txt')
+        file_manipuli.update_file_from_list(termiList,'TermiProjects.txt')
         print(search+" has been terminated!")
     
 def edit_project_details():
     search = 'Project ID: ' + (input("Enter Project ID you wish to edit:\n"))
     search=search.rstrip('\n')
-    list = create_list_from_file('Projects.txt','t')
+    list = file_manipuli.txt_file_to_list('Projects.txt')
     try:
         idIndex = int(list.index(search))
     except ValueError:
@@ -216,27 +200,12 @@ def edit_project_details():
         else:
             print("Invalid input! please follow instructions")   
         repeat=input("Would you like to preform another action?\n(press Yes or Y to edit more details, anything else to save edited information and return to menu)\n")
-    update_file_from_list(list,'Projects.txt')
+    file_manipuli.update_file_from_list(list,'Projects.txt')
     print("All updates in: "+search+" has been succesfully made and written to Projects.txt!\n")
     
-def update_file_from_list(list, filename_to_update):
-    with open("temp.txt", "w") as f:
-        for line in list:
-            if type(line) is not dict:
-                splitString=line.split(": ")
-                tempString=str('{"'+splitString[0]+'" : "'+splitString[1]+'"}')
-                tempDict = json.loads(tempString)
-                line=tempDict
-            for key,value in line.items():
-                f.write(str(key) + ": " + str(value)+"\n")
-    try:
-        os.remove(filename_to_update)
-    except(FileNotFoundError):
-        print("file not found!")
-    os.rename('temp.txt', filename_to_update)
 
 def get_time_list(lookFor):
-    list = create_list_from_file('TermiProjects.txt','t')
+    list = file_manipuli.txt_file_to_list('TermiProjects.txt')
     handleList=[]
     flag=[0,0]
     for i in list:
@@ -324,7 +293,7 @@ def print_project_menu():
     
 def check_expiring_projects():
     global currentDate
-    list = create_list_from_file('Projects.txt','t')
+    list = file_manipuli.txt_file_to_list('Projects.txt')
     noExpiring=True
     for i in list:
         if ("Project ID") in i:
