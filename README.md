@@ -13,7 +13,7 @@ The information system includes 2 modules:<br/>
  
 ### collaborators:<br/>
 Eyal Avni<br/>
-Avshalom Knafo<br/>
+Avshalom Knafo @avshak<br/>
 Yaacov Amin<br/>
 
 ### Instructions:<br/>
