@@ -200,7 +200,7 @@ def show_emp_name_list(empl_filename):
         j+=6
 
 def print_menu():
-    print("Hello ! what would you like to do?  ")
+    print("Welcome to Employees Management Tool! please select an action")
     print("1.Open new employee card")
     print("2.Change employee's password")
     print("3.Chnage employee's department ")
@@ -227,7 +227,7 @@ def employee_main():
     while again in choice_list:
 
         print_menu()
-        choice = input("Enter 1-8 from the menu:")
+        choice = input("Enter your selection from the menu:")
         if choice == '1':
             info=get_employee_info()
             file_manipuli.add_to_file_from_list(info,EMPLOYEES_FILE_GIVEN_NAME)

@@ -75,7 +75,7 @@ def get_details_by_ID():
 
     
 def remove_duplicate_projects():
-    print("This action will look for projects with the same Name and Due date and will remove them from file")
+    print("This action will look for projects with the same Name and Due date and will remove them from current projects file")
     print("Attention! removed projects cannot be restored and will not move to terminated file!")
     choice=input("Press Y or YES to delete, any other key to go back to menu\n")
     choice_list = ['y', 'yes', 'Y', 'YES']
@@ -231,7 +231,7 @@ def get_handle_graph_list():
 
 def show_handle_time_chart():
     fig,ax = plt.subplots()
-    plt.title('Project Handle Time Chart')
+    plt.title('Project Handle Time Chart:')
     timeLabels = ['two weeks\n or less', 'two weeks\n to \none month','one month\n to \nsix months','six months\n or more']
     data=get_handle_graph_list()
     timeBar=ax.bar(timeLabels,data,color=['green', 'yellow', 'orange', 'red'],edgecolor='black')
@@ -240,16 +240,16 @@ def show_handle_time_chart():
     plt.show()
     
 def show_on_time_completion_percentage():
-    plt.title('On-Time Completion Chart')
+    plt.title('On-Time Completion Chart:',loc='left')
     data = get_late_graph_list()
     Labels = ['Completed on time','Completed late',]
     explode = (0, 0.4)
-    plt.pie(data, labels=Labels, explode=explode, startangle=90, autopct='%d%%',colors=["Green","red"])
+    plt.pie(data, labels=Labels, explode=explode, startangle=0, autopct='%d%%',colors=["Green","red"])
     plt.show()
     
 
 def print_project_menu():
-    print("Welcome to project management tool! please select an action")
+    print("Welcome to Project Management Tool! please select an action")
     print("1.Create new project")
     print("2.Get project details by ID")
     print("3.Terminate project")
