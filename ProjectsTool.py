@@ -5,6 +5,7 @@ import os
 from datetime import date
 import datetime
 import file_manipuli
+import input_validation
 import matplotlib.pyplot as plt
 
 SIZE_OF_PROJECT_ID=10
@@ -14,11 +15,11 @@ currentDate=date.today().strftime("%d/%m/%Y")
 def create_new_project():
     global currentDate
     print_project_instructions()
-    projectName=project_name_validation()
-    projectDueDate=project_date_validation()
+    projectName=input_validation.project_name_validation()
+    projectDueDate=input_validation.project_date_validation()
     while project_date_too_close(projectDueDate):
         print("Due date too close, please make sure date is at least 7 days after: "+currentDate+" (current date)")
-        projectDueDate=project_date_validation()
+        projectDueDate=input_validation.project_date_validation()
     print("Due Date is valid!: "+projectDueDate)
     projectID="".join(random.choices(string.ascii_uppercase + string.digits, k=SIZE_OF_PROJECT_ID))
     print("ID generated for this project is: "+str(projectID))  
@@ -38,35 +39,6 @@ def print_project_instructions():
     print("4) Project due date must be at least 7 days from: "+currentDate+" (current date)")
     print("5) Projects with identical names are possible\n")
     
-def project_name_validation():
-    projectName=input("Enter project name\n")
-    allowedCharachters=re.compile(r'[a-zA-Z\s]*$')
-    while (not allowedCharachters.match(projectName)):
-        projectName=input("Project name is not valid, please select a project name according to instructions\n")
-    print("Project name is valid!")
-    return projectName
-    
-def project_date_validation():
-    dateFormat=re.compile(r'\d{2}[-/]\d{2}[-/]\d{4}')
-    projectDueDate=input("Enter project due date\n")
-    while (not dateFormat.match(projectDueDate)):
-        projectDueDate=input("Project Due date does not match format, please use DD/MM/YYYY\n")
-    days=projectDueDate.split("/")[0]
-    months=projectDueDate.split("/")[1]
-    years=projectDueDate.split("/")[2]
-    flags=[0,0]
-    while (flags[0] == 0) or (flags[1] == 0):
-        if (int(days) in range(1,31)):
-            flags[0]=1
-        else:
-            days=input("days not in range, please enter a vlaue between 1 to 30\n")
-        if (int(months) in range(1,13)):
-            flags[1]=1
-        else:
-            months=input("months not in range, please enter a vlaue between 1 to 12\n")
-    dateList=[days,months,years]
-    projectDueDate="/".join(dateList)
-    return projectDueDate
     
 def project_date_too_close(projectDueDate):
     global currentDate
@@ -188,13 +160,13 @@ def edit_project_details():
         choice_list = ['d','D','date','Date','n','N','name','Name']
         if choice in ['d','D','date','Date']:
             print("Current "+ list[idIndex+3])
-            date=project_date_validation()
-            list[idIndex+2]="Project due date: "+date
+            date=input_validation.project_date_validation()
+            list[idIndex+3]="Project due date: "+date
             print("Updated "+list[idIndex+3])
                  
         elif choice in ['n','N','name','Name']:
             print("Current "+ list[idIndex+1])
-            name=project_name_validation()
+            name=input_validation.project_name_validation()
             list[idIndex+1]="Project name: "+name
             print("Updated "+list[idIndex+1])
         else:

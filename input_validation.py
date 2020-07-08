@@ -1,4 +1,6 @@
 import string
+import re
+
 def check_email_val(string):
     length = False
     at_sign = False
@@ -57,5 +59,35 @@ def check_name(string):
         return 1
     else:
         return 0
+        
+def project_name_validation():
+    projectName=input("Enter project name\n")
+    allowedCharachters=re.compile(r'[a-zA-Z\s]*$')
+    while (not allowedCharachters.match(projectName)):
+        projectName=input("Project name is not valid, please select a project name according to instructions\n")
+    print("Project name is valid!")
+    return projectName
+    
+def project_date_validation():
+    dateFormat=re.compile(r'\d{2}[-/]\d{2}[-/]\d{4}')
+    projectDueDate=input("Enter project due date\n")
+    while (not dateFormat.match(projectDueDate)):
+        projectDueDate=input("Project Due date does not match format, please use DD/MM/YYYY\n")
+    days=projectDueDate.split("/")[0]
+    months=projectDueDate.split("/")[1]
+    years=projectDueDate.split("/")[2]
+    flags=[0,0]
+    while (flags[0] == 0) or (flags[1] == 0):
+        if (int(days) in range(1,31)):
+            flags[0]=1
+        else:
+            days=input("days not in range, please enter a vlaue between 1 to 30\n")
+        if (int(months) in range(1,13)):
+            flags[1]=1
+        else:
+            months=input("months not in range, please enter a vlaue between 1 to 12\n")
+    dateList=[days,months,years]
+    projectDueDate="/".join(dateList)
+    return projectDueDate
 
 
