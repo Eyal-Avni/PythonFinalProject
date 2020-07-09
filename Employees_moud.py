@@ -92,7 +92,7 @@ def change_password(pass_filename):
 
         pass_dici[search] = new_password
         pass_list=file_manipuli.dici_to_list(pass_dici)
-        file_manipuli.update_file_from_list(pass_list,PASSWORD_FILE_GIVEN_NAME,'b')
+        file_manipuli.update_file_from_list(pass_list,PASSWORD_FILE_GIVEN_NAME,'t')
 
         print('Password has been changed successfully!')
 
@@ -126,6 +126,7 @@ def delete_employee(empl_filename,pass_filename):
         i+=1
 
     file_manipuli.update_bin_file_from_list(pass_list,PASSWORD_FILE_GIVEN_NAME)
+    print('The file has been updated!')
 
 def change_depart(empl_filename):
     list = file_manipuli.txt_file_to_list(empl_filename)
@@ -182,7 +183,12 @@ def get_mf_ratio():
     explode = (0, 0.1)
     colors=['orange','pink']
     plt.pie(values, labels=Labels, explode=explode, startangle=120, autopct='%.1f%%',colors=colors)
-    ratio=float(male_count/female_count)
+    try:
+        ratio=float(male_count/female_count)
+    except ZeroDivisionError:
+        print('No females were found in the company!')
+        return
+
     plt.title('Male/Female ratio:\n'+str(ratio))
 
     plt.show()
