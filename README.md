@@ -20,6 +20,7 @@ Yaacov Amin<br/>
 **Option A**:<br/>
   1) Download all .py files<br/>
   2) Run MainMenu.py<br/>
+  
 **Option B**:<br/>
 Run PythonFinalProject.exe located in release v1.0 <br/>
 (This option is much slower)
