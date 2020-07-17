@@ -8,10 +8,11 @@ import file_manipuli
 import input_validation
 import matplotlib.pyplot as plt
 
-SIZE_OF_PROJECT_ID=10
-SIZE_OF_ENTRY_IN_PROJECT_LIST=4
-currentDate=date.today().strftime("%d/%m/%Y")
+SIZE_OF_PROJECT_ID=10 #This constant sets the length of the project ID 
+SIZE_OF_ENTRY_IN_PROJECT_LIST=4 #number of lines to be saved to file for every project
+currentDate=date.today().strftime("%d/%m/%Y")#Global variable that records current date
 
+#This function creates a new project from user input records (project name, due date) and generates remaining records (project acceptance date. project ID)
 def create_new_project():
     global currentDate
     print_project_instructions()
@@ -30,6 +31,7 @@ def create_new_project():
     file.close()
     print('Project name: ' + projectName+ '\nProject acceptance date: '+currentDate + '\nProject due date: ' + projectDueDate, '\nProject ID: ' + projectID + "\nwere succesfully written to file!")
 
+#This function prints instructions for new project 
 def print_project_instructions():
     global currentDate
     print("----------------------\nInstructions for new project:")
@@ -39,7 +41,8 @@ def print_project_instructions():
     print("4) Project due date must be at least 7 days from: "+currentDate+" (current date)")
     print("5) Projects with identical names are possible\n")
     
-    
+
+#This function validates project due date is not too close to current date
 def project_date_too_close(projectDueDate):
     global currentDate
     currDay=int(currentDate.split("/")[0])
@@ -61,6 +64,7 @@ def project_date_too_close(projectDueDate):
                 return False              
     return True
     
+#This function retrieves project details be input ID    
 def get_details_by_ID():
     search = 'Project ID: ' + (input("Enter Project ID to extract details:"))
     list = file_manipuli.txt_file_to_list('Projects.txt')
@@ -73,7 +77,7 @@ def get_details_by_ID():
     print(list[idIndex + 2])
     print(list[idIndex + 3])
 
-    
+#See explanation in first print line    
 def remove_duplicate_projects():
     print("This action will look for projects with the same Name and Due date and will remove them from current projects file")
     print("Attention! removed projects cannot be restored and will not move to terminated file!")
@@ -112,6 +116,7 @@ def remove_duplicate_projects():
         file_manipuli.update_file_from_DictList(projectDictList,"Projects.txt")
         print("Duplicate Projects removed from file Projects.txt!")
         
+#This function prints the contants of a project text file
 def show_projects(file,headline):
     print("projects in "+headline+" Projects file :")
     list = file_manipuli.txt_file_to_list(file)
@@ -120,7 +125,8 @@ def show_projects(file,headline):
             print("----------------------")
         print(i)
     print("----------------------")
-        
+
+#This function terminates a project by removing it from Projects.txt and writing it to  TermiProjects.txt    
 def terminate_project():
     print("Terminated projects will be removed from current project file and written to terminated projects file")
     choice=input("Press Y or YES to begin termination process, any other key to go back to menu\n")
@@ -143,7 +149,8 @@ def terminate_project():
         file_manipuli.update_file_from_DictList(list,'Projects.txt')
         file_manipuli.update_file_from_DictList(termiList,'TermiProjects.txt')
         print(search+" has been terminated!")
-    
+        
+#This function allows to edit project name and due date by input ID   
 def edit_project_details():
     search = 'Project ID: ' + (input("Enter Project ID you wish to edit:\n"))
     search=search.rstrip('\n')
@@ -175,7 +182,7 @@ def edit_project_details():
     file_manipuli.update_file_from_DictList(list,'Projects.txt')
     print("All updates in: "+search+" has been succesfully made and written to Projects.txt!\n")
     
-
+#This function compares two date records (could be termination date, due date and acceptance date) for every project in TermiProjects.txt and subtracts them, output is written to list
 def get_time_list(lookFor):
     list = file_manipuli.txt_file_to_list('TermiProjects.txt')
     handleList=[]
@@ -188,7 +195,6 @@ def get_time_list(lookFor):
             accYear=int(accDate[1].split("/")[2])
             accDateObj=datetime.date(accYear, accMonth, accDay)
             flag[0]=1
-            # print("due date: "+str(dueDate))
         if ("Project termination date") in i:
             termiDate=i.split(": ")
             termiDay=int(termiDate[1].split("/")[0])
@@ -196,13 +202,13 @@ def get_time_list(lookFor):
             termiYear=int(termiDate[1].split("/")[2])
             termDateObj=datetime.date(termiYear, termiMonth, termiDay)
             flag[1]=1
-            # print("termi date: "+str(termiDate))
         if flag==[1,1]:
             handleTimeObj=termDateObj-accDateObj
             handleList.append(int(handleTimeObj.total_seconds()/24/60/60))
             flag=[0,0]           
     return handleList
     
+#This function generates list of values to be displayed by Late projects graph    
 def get_late_graph_list():
     handleList=get_time_list("Project due date:")
     graphList=[0,0]
@@ -213,7 +219,7 @@ def get_late_graph_list():
             graphList[1]=graphList[1]+1
     return graphList
     
-    
+#This function generates list of values to be displayed by Handle-Time graph       
 def get_handle_graph_list():
     handleList=get_time_list("Project acceptance date")
     graphList=[0,0,0,0]
@@ -228,7 +234,7 @@ def get_handle_graph_list():
             graphList[3]=graphList[3]+1
     return graphList
         
-
+#This function shows Handle time chart
 def show_handle_time_chart():
     fig,ax = plt.subplots()
     plt.title('Project Handle Time Chart:')
@@ -239,6 +245,7 @@ def show_handle_time_chart():
     ax.set_xlabel('Time took to complete ') 
     plt.show()
     
+#This function shows late projects chart    
 def show_on_time_completion_percentage():
     plt.title('On-Time Completion Chart:',loc='left')
     data = get_late_graph_list()
@@ -247,7 +254,7 @@ def show_on_time_completion_percentage():
     plt.pie(data, labels=Labels, explode=explode, startangle=0, autopct='%1.1f%%',colors=["Green","red"],shadow=True)
     plt.show()
     
-
+#This function prints the project managment tool menu
 def print_project_menu():
     print("Welcome to Project Management Tool! please select an action")
     print("1.Create new project")
@@ -263,8 +270,7 @@ def print_project_menu():
     print("0.Return to Sapiens Information System menu")
     print("-------------------------------------------")
     
-    
-    
+#This function looks for projects that are due date for the next 7 days in Projects.txt and prints them    
 def check_expiring_projects():
     global currentDate
     list = file_manipuli.txt_file_to_list('Projects.txt')
@@ -285,7 +291,7 @@ def check_expiring_projects():
     if noExpiring:
         print("No projects are due to this week")
           
-    
+#Main driver for Project Management Tool    
 def project_tool_main():
 
     again = 'y'
