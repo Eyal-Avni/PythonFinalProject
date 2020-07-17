@@ -26,6 +26,7 @@ def update_file_from_list(list, filename_to_update,mode):
     file.close()
     os.remove(filename_to_update)
     os.rename('temp', filename_to_update)
+    
 def add_to_file_from_list(list,filename):
 
     file = open(filename,"a")
@@ -33,6 +34,7 @@ def add_to_file_from_list(list,filename):
         file.write(str(item) + '\n')
 
     file.close()
+    
 def binfile_to_list(filename):
     file=open(filename,'rb')
     flist=[]
@@ -66,6 +68,8 @@ def dici_to_list(dici):
         i+=1
 
     return res
+    
+#This function returns a list created from records in text file, if no text file is found than an empty text file will be created    
 def txt_file_to_list(filename):
 
     try:
@@ -85,7 +89,7 @@ def txt_file_to_list(filename):
 
     return list
     
-    
+#This function updates records in text file with a given list of dictionaries  
 def update_file_from_DictList(list, filename_to_update):
     with open("temp.txt", "w") as f:
         for line in list:

@@ -1,7 +1,7 @@
 import string
 import re
 
-
+#This function validates employee Email structure (XXX@XXX.XXX)
 def check_email_val(string):
     length = False
     at_sign = False
@@ -21,15 +21,15 @@ def check_email_val(string):
         return True
     else:
         return False
-
-
+        
+#This function validates gender option choices
 def check_gender_input(string):
     choice_list = ['Male', 'Female']
     if string not in choice_list:
         return False
     return True
 
-
+#This function validates employee password according to insturctions
 def check_password(string):
     length = False
     upper = False
@@ -51,7 +51,7 @@ def check_password(string):
         print('Invalid password strength!')
         return False
 
-
+#This function validates employee ID structure
 def check_ID(string):
     if len(str(string)) < 9:
         return 0
@@ -59,13 +59,14 @@ def check_ID(string):
         return 1
 
 
+#This function validates employee name is alphabetical only
 def check_name(string):
     if string.isalpha():
         return 1
     else:
         return 0
 
-
+#This function validates project name is according to insturctions
 def project_name_validation():
     projectName = input("Enter project name\n")
     allowedCharachters = re.compile(r'[a-zA-Z\s]*$')
@@ -74,7 +75,7 @@ def project_name_validation():
     print("Project name is valid!")
     return projectName
 
-
+#This function validates project Due date is according to insturctions
 def project_date_validation():
     dateFormat = re.compile(r'\d{2}[-/]\d{2}[-/]\d{4}')
     projectDueDate = input("Enter project due date\n")

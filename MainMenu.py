@@ -1,6 +1,9 @@
 import Employees_moud
 import ProjectsTool
 
+#This is the main driver program for the final project
+#Please visit project GitHub page at: https://github.com/Eyal-Avni/PythonFinalProject for more iformation
+
 def print_logo():
     print("   &%%%%%%%%      %%%      %%%%%%%%%.   %%%  %%%%%%%%%  %%%     %%%   /%%%%%%%%&")
     print(" %%%.            %%%%%     %%%     %%%% %%%  %%        *%%%%&   %%% %%%%        ")
