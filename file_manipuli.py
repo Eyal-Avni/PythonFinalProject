@@ -1,5 +1,8 @@
 import os
 import json
+#even though json is not taught in this course, we have used it ONCE (update_file_from_DictList function) to convert a list that is formated as a dictionary, into a dictionary.
+#This could have been done by iterating over the list and reconstructing the list into a dictionary, but it would be longer and less elegant
+#json is built-in python, so no installation of additional libraries is required
 
 def update_bin_file_from_list(list,filename_to_update):
     file = open('temp.txt', 'wb')
@@ -96,7 +99,7 @@ def update_file_from_DictList(list, filename_to_update):
             if type(line) is not dict:
                 splitString=line.split(": ")
                 tempString=str('{"'+splitString[0]+'" : "'+splitString[1]+'"}')
-                tempDict = json.loads(tempString)
+                tempDict = json.loads(tempString) #This is the ONLY use of json
                 line=tempDict
             for key,value in line.items():
                 f.write(str(key) + ": " + str(value)+"\n")

@@ -1,5 +1,8 @@
 import string
 import re
+#even though regular expression are not taught in this course we have used them in certain functions ONLY for the purpose of formating strings
+#for example to make sure a date is of the DD/MM/YYYY format. this could have been done by creating many string variables and appending them, but this way is shorter and more elegant
+
 
 #This function validates employee Email structure (XXX@XXX.XXX)
 def check_email_val(string):
